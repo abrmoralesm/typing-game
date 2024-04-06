@@ -10,12 +10,40 @@
     }
 
     body{
+        background: var(--black);
         font-family: Menlo, monospace;
+        display:grid;
+        padding: 32px;
+        justify-content: center;
+        margin-top: 32px;
+        padding:16px;
     }
 </style>
 
 <body>
     <main>
-        monkey
+        <section id="game">
+            <time>30</time>
+            <p></p>
+            <input autofocus>
+        </section>
     </main>
 </body>
+
+<script>
+    const $time = document.querySelector('time');
+    const $paragraph = document.querySelector('p');
+    const $input = document.querySelector('input');
+
+    const INITIAL_TIME =30;
+    const TEXT = 'the quick brown fox jumps over the lazy dog and midudev is trying to clone monkey type for fun and profit using vanilla js fot the typing test speed';
+
+    let words =[]
+    let currentTime= INITIAL_TIME;
+
+    initGame()
+    initEvents()
+    
+    function initGame(){}
+    function initEvents(){}
+</script>
