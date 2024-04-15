@@ -2,21 +2,21 @@
 <style>
     :root {
         color-scheme: light dark;
-          --green: #00b755;
-          --yellow: #daaf38;
-          --red: #ca4754;
-          --black: #222;
-          --gray: #999;
+        --green: #00b755;
+        --yellow: #daaf38;
+        --red: #ca4754;
+        --black: #222;
+        --gray: #999;
     }
 
-    body{
+    body {
         background: var(--black);
         font-family: Menlo, monospace;
-        display:grid;
+        display: grid;
         padding: 32px;
         justify-content: center;
         margin-top: 32px;
-        padding:16px;
+        padding: 16px;
     }
 
     section {
@@ -26,42 +26,58 @@
         gap: 4px;
         max-width: 500px;
     }
+
     time {
         color: var(--yellow)
     }
+
     input {
         z-index: -999;
-        position:absolute;
-        top:0;
-        left:0;
-        pointer-events:none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
     }
-    p{
-        display:flex;
-        flex-wrap:wrap;
+
+    p {
+        display: flex;
+        flex-wrap: wrap;
         gap: 3px 8px;
         margin: 0;
     }
-    letter{
+
+    letter {
         color: var(--gray);
-        position:relative;
-        &.active::before{
-            content:'|';
+        position: relative;
+
+        &.active::before {
+            content: '|';
             color: var(--yellow);
             font-size: 14px;
-            position:absolute;
-            left:-65%;
+            position: absolute;
+            left: -65%;
             animation: 1s blink infinite ease-in-out;
         }
-    }
-    @keyframes blink {
-        0%, 25%{
-            opacity: 1;
+        &.correct{
+            color: var(--green);
         }
-        75% { opacity: 0}
-        
+        &.incorrect{
+            color: var(--red);
+        }
     }
 
+    @keyframes blink {
+
+        0%,
+        25% {
+            opacity: 1;
+        }
+
+        75% {
+            opacity: 0
+        }
+
+    }
 </style>
 
 <body>
@@ -79,49 +95,86 @@
     const $paragraph = document.querySelector('p');
     const $input = document.querySelector('input');
 
-    const INITIAL_TIME =30;
-    const TEXT = 'the quick brown fox jumps over the lazy dog and Abraham is trying to clone monkey type for fun and profit using vanilla js fot the typing test speed';
+    const INITIAL_TIME = 30;
+    const TEXT =
+        'the quick brown fox jumps over the lazy dog and Abraham is trying to clone monkey type for fun and profit using vanilla js fot the typing test speed';
 
-    let words =[]
-    let currentTime= INITIAL_TIME;
+    let words = []
+    let currentTime = INITIAL_TIME;
 
     initGame()
     initEvents()
 
-    function initGame(){
+    function initGame() {
         words = TEXT.split(' ').slice(0, 32)
         currentTime = INITIAL_TIME
 
-        $time.textContent =currentTime
+        $time.textContent = currentTime
 
-        $paragraph.innerHTML = words.map((word, index)=>{ const letters = word.split('')
+        $paragraph.innerHTML = words.map((word, index) => {
+            const letters = word.split('')
 
-        return `<word>
+            return `<word>
             ${letters
                 .map(letter => `<letter>${letter}</letter>`)
                 .join('')
             }
             </word>
             `
-            }).join('')
-            const $firstWord = $paragraph.querySelector('word')
-            $firstWord.classList.add('active')
-            $firstWord.querySelector('letter').classList.add('active')
-                
-            const intervalID = setInterval(() => {
-                currentTime --
-                $time.textContent = currentTime
+        }).join('')
+        const $firstWord = $paragraph.querySelector('word')
+        $firstWord.classList.add('active')
+        $firstWord.querySelector('letter').classList.add('active')
 
-                if(currentTime===0){
-                    clearInterval(intervalID)
-                    gameOver()
-                }
-            }, 1000);
+        const intervalID = setInterval(() => {
+            currentTime--
+            $time.textContent = currentTime
+
+            if (currentTime === 0) {
+                clearInterval(intervalID)
+                gameOver()
+            }
+        }, 1000);
     }
 
-    function initEvents(){}
+    function initEvents() {
+        document.addEventListener('keydown', () => {
+            $input.focus()
+        })
+        $input.addEventListener('keydown', onKeyDown)
+        $input.addEventListener('keyup', onKeyUp)
+    }
 
-    function gameOver(){
+    function onKeyDown() {}
+
+    function onKeyUp() {
+        //recuperamos los elementos actuales
+        const $currentWord = $paragraph.querySelector('word.active')
+        const $currentLetter = $currentWord.querySelector('letter.active')
+        const currentWord = $currentWord.innerText.trim()
+        $input.maxLength = currentWord.length
+        console.log({
+            value: $input.value,
+            currentWord
+        })
+
+        const $allLetters = $currentWord.querySelectorAll('letter')
+
+         $allLetters.forEach($letter=>$letter.classList.remove('correct', 'incorrect'))
+        $input.value.split('').forEach((char, index) => {
+            const $letter = $allLetters[index]
+            const letterToCheck = currentWord[index]
+
+            const isCorrect = char === letterToCheck
+            const letterClass = isCorrect ? 'correct' : 'incorrect'
+            $letter.classList.add(letterClass)
+        })
+        $currentLetter.classList.remove('active')
+        const inputLength = $input.value.length
+        $allLetters[inputLength].classList.add('active')
+    }
+
+    function gameOver() {
         console.log("Game over")
     }
 </script>
