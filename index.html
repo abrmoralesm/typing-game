@@ -42,6 +42,25 @@
         gap: 3px 8px;
         margin: 0;
     }
+    letter{
+        color: var(--gray);
+        position:relative;
+        &.active::before{
+            content:'|';
+            color: var(--yellow);
+            font-size: 14px;
+            position:absolute;
+            left:-65%;
+            animation: 1s blink infinite ease-in-out;
+        }
+    }
+    @keyframes blink {
+        0%, 25%{
+            opacity: 1;
+        }
+        75% { opacity: 0}
+        
+    }
 
 </style>
 
@@ -85,6 +104,9 @@
             </word>
             `
             }).join('')
+            const $firstWord = $paragraph.querySelector('word')
+            $firstWord.classList.add('active')
+            $firstWord.querySelector('letter').classList.add('active')
                 
             const intervalID = setInterval(() => {
                 currentTime --
